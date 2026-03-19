@@ -10,6 +10,7 @@ const inquirySchema = new mongoose.Schema({
   message: { type: String, required: true, trim: true, maxlength: 5000 },
   status: { type: String, enum: ['new', 'read', 'replied', 'archived'], default: 'new', index: true },
   admin_notes: String,
+  reply_message: { type: String, trim: true, maxlength: 5000, default: '' },
   replied_by: String,
   replied_at: Date,
   ip_address: String,

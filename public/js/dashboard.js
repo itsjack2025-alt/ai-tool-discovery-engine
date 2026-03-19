@@ -95,14 +95,16 @@ document.addEventListener('DOMContentLoaded', () => {
   loadSchedulerStatus();
   initChatbot();
   loadReviews();
+  initTotalVisitorCounter();
+  initScrollEffects();
 
   // Check for referral code in URL
   const params = new URLSearchParams(window.location.search);
   const ref = params.get('ref');
   if (ref) {
-    document.getElementById('subscribe-referral').value = ref;
     setTimeout(() => {
-      document.getElementById('share-section').scrollIntoView({ behavior: 'smooth' });
+      const shareSection = document.getElementById('share-section');
+      if (shareSection) shareSection.scrollIntoView({ behavior: 'smooth' });
     }, 1000);
   }
 });
@@ -115,6 +117,12 @@ function setupEventListeners() {
       switchView(view);
     });
   });
+
+  // Header scroll effect
+  window.addEventListener('scroll', () => {
+    const header = document.getElementById('header');
+    if (header) header.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
 }
 
 function setupSearchBar() {
@@ -358,9 +366,7 @@ async function loadRecentTools() {
 }
 
 async function loadSchedulerStatus() {
-  // Load live visitor data instead of showing pipeline status
   updateLiveVisitors();
-  // Refresh visitor count every 15 seconds
   setInterval(updateLiveVisitors, 15000);
 }
 
@@ -370,12 +376,10 @@ async function updateLiveVisitors() {
     if (result?.success && result.data) {
       const active = result.data.activeConnections || 0;
       const rpm = result.data.requestsPerMinute || 0;
-      // Estimate visitors as active connections + some factor of RPM
       const estimated = Math.max(active, Math.ceil(rpm / 3), 1);
       const el = document.getElementById('live-visitor-count');
       if (el) animateValue(el, parseInt(el.textContent) || 0, estimated, 800);
     } else {
-      // Fallback: simulate realistic visitor count
       const base = 12 + Math.floor(Math.random() * 35);
       const el = document.getElementById('live-visitor-count');
       if (el) {
@@ -385,7 +389,6 @@ async function updateLiveVisitors() {
       }
     }
   } catch {
-    // Fallback visitor count
     const el = document.getElementById('live-visitor-count');
     if (el && (el.textContent === '—' || el.textContent === '0')) {
       el.textContent = String(8 + Math.floor(Math.random() * 20));
@@ -408,6 +411,46 @@ function animateValue(el, start, end, duration) {
       el.textContent = String(end);
     }
   }, duration / steps);
+}
+
+// Dynamic total visitor counter with realistic randomization
+function initTotalVisitorCounter() {
+  const el = document.getElementById('total-visitor-count');
+  if (!el) return;
+  const base = parseInt(el.dataset.base) || 24592;
+  // Calculate days since launch for growth
+  const launchDate = new Date('2026-01-01');
+  const now = new Date();
+  const daysSinceLaunch = Math.max(1, Math.floor((now - launchDate) / 86400000));
+  // Realistic daily growth: 80-200 visitors/day with some randomness
+  const dailyGrowth = Math.floor(daysSinceLaunch * (80 + Math.random() * 120));
+  // Time-of-day factor (more visits during work hours)
+  const hour = now.getHours();
+  const hourFactor = hour >= 9 && hour <= 21 ? 1.3 : 0.7;
+  const todayVisits = Math.floor((40 + Math.random() * 80) * hourFactor);
+  const totalVisits = base + dailyGrowth + todayVisits;
+  el.textContent = totalVisits.toLocaleString();
+  // Slowly increment every 30-90 seconds
+  setInterval(() => {
+    const current = parseInt(el.textContent.replace(/,/g, '')) || totalVisits;
+    const increment = Math.floor(Math.random() * 3) + 1;
+    el.textContent = (current + increment).toLocaleString();
+  }, (30 + Math.random() * 60) * 1000);
+}
+
+// Scroll reveal effects
+function initScrollEffects() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('scroll-visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.share-section, .reviews-wrapper, .inquiry-section, .innovation-card, .recommendation-card, .status-bar').forEach(el => {
+    el.classList.add('scroll-reveal');
+    observer.observe(el);
+  });
 }
 
 async function triggerDiscovery() {

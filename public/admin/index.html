@@ -187,6 +187,8 @@
       <button class="nav-link active" onclick="showView('overview')"><span class="icon">📊</span><span>Overview</span></button>
       <button class="nav-link" onclick="showView('tools')"><span class="icon">🛠️</span><span>Tools</span></button>
       <button class="nav-link" onclick="showView('submissions')"><span class="icon">📩</span><span>Submissions</span></button>
+      <button class="nav-link" onclick="showView('reviews')"><span class="icon">⭐</span><span>Reviews</span></button>
+      <button class="nav-link" onclick="showView('inquiries')"><span class="icon">💼</span><span>Inquiries</span></button>
     </div>
 
     <div class="nav-section">
@@ -425,6 +427,38 @@
         </div>
       </div>
     </div>
+
+    <!-- Reviews View -->
+    <div class="view-section" id="view-reviews">
+      <div class="panel">
+        <div class="panel-title">⭐ Review Management</div>
+        <div style="margin-bottom:1rem;display:flex;gap:8px">
+          <button class="btn btn-secondary" onclick="loadAdminReviews('pending')" id="rev-filter-pending">Pending</button>
+          <button class="btn btn-secondary" onclick="loadAdminReviews('approved')">Approved</button>
+          <button class="btn btn-secondary" onclick="loadAdminReviews('rejected')">Rejected</button>
+          <button class="btn btn-secondary" onclick="loadAdminReviews('all')">All</button>
+        </div>
+        <table class="admin-table">
+          <thead><tr><th>Author</th><th>Rating</th><th>Title</th><th>Content</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="reviews-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Inquiries View -->
+    <div class="view-section" id="view-inquiries">
+      <div class="panel">
+        <div class="panel-title">💼 Business Inquiries</div>
+        <div style="margin-bottom:1rem;display:flex;gap:8px">
+          <button class="btn btn-secondary" onclick="loadAdminInquiries('new')" id="inq-filter-new">New</button>
+          <button class="btn btn-secondary" onclick="loadAdminInquiries('read')">Read</button>
+          <button class="btn btn-secondary" onclick="loadAdminInquiries('replied')">Replied</button>
+          <button class="btn btn-secondary" onclick="loadAdminInquiries('all')">All</button>
+        </div>
+        <div id="inquiries-list"></div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -512,6 +546,7 @@ function showView(view) {
     overview: '📊 Overview', tools: '🛠️ Tools', submissions: '📩 Submissions',
     ads: '📺 Ads', settings: '⚙️ General', seo: '🔍 SEO', features: '🧩 Features',
     deployment: '🚀 Deployment', users: '👥 Users', scheduler: '⏰ Scheduler',
+    reviews: '⭐ Reviews', inquiries: '💼 Inquiries',
   };
   document.getElementById('view-title').textContent = titles[view] || view;
 
@@ -520,7 +555,8 @@ function showView(view) {
     ads: loadAdConfig, settings: () => loadSettingsForm('general'),
     seo: () => loadSettingsForm('seo'), features: loadFeatureToggles,
     deployment: () => loadSettingsForm('deployment'), users: loadUsers,
-    scheduler: loadScheduler,
+    scheduler: loadScheduler, reviews: () => loadAdminReviews('pending'),
+    inquiries: () => loadAdminInquiries('new'),
   };
   loaders[view]?.();
 }
@@ -773,6 +809,107 @@ async function loadScheduler() {
 async function runDiscovery() {
   const data = await adminFetch('/discovery/run', { method: 'POST' });
   toast(data.message || 'Discovery started!');
+}
+
+// ---- Admin Reviews ----
+async function loadAdminReviews(status = 'pending') {
+  const data = await adminFetch(`/admin/reviews?status=${status}&limit=50`);
+  if (!data.success) return;
+  document.getElementById('reviews-tbody').innerHTML = data.data.length === 0
+    ? '<tr><td colspan="7" style="text-align:center;color:var(--text3)">No reviews found</td></tr>'
+    : data.data.map(r => {
+      const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+      const statusBadge = { pending: 'badge-yellow', approved: 'badge-green', rejected: 'badge-red' }[r.status] || 'badge-purple';
+      return `<tr>
+        <td><strong>${esc(r.reviewer_name)}</strong><br><span style="font-size:.7rem;color:var(--text3)">${esc(r.reviewer_email || '')}</span></td>
+        <td style="color:#FFD700">${stars}</td>
+        <td>${esc(r.title || '—')}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.content)}</td>
+        <td><span class="badge ${statusBadge}">${r.status}</span></td>
+        <td>${new Date(r.created_at).toLocaleDateString()}</td>
+        <td>
+          ${r.status === 'pending' ? `<button class="btn btn-success" style="font-size:.7rem;padding:4px 8px" onclick="approveReview('${r._id}')">✓</button>
+          <button class="btn btn-danger" style="font-size:.7rem;padding:4px 8px" onclick="rejectReview('${r._id}')">✗</button>` : ''}
+          <button class="btn btn-danger" style="font-size:.7rem;padding:4px 8px" onclick="deleteReview('${r._id}')">🗑️</button>
+        </td>
+      </tr>`;
+    }).join('');
+}
+async function approveReview(id) {
+  await adminFetch(`/admin/reviews/${id}/approve`, { method: 'PUT' });
+  toast('Review approved!'); loadAdminReviews('pending');
+}
+async function rejectReview(id) {
+  await adminFetch(`/admin/reviews/${id}/reject`, { method: 'PUT', body: JSON.stringify({ notes: 'Rejected by admin' }) });
+  toast('Review rejected'); loadAdminReviews('pending');
+}
+async function deleteReview(id) {
+  if (!confirm('Delete this review permanently?')) return;
+  await adminFetch(`/admin/reviews/${id}`, { method: 'DELETE' });
+  toast('Review deleted'); loadAdminReviews('all');
+}
+
+// ---- Admin Inquiries ----
+async function loadAdminInquiries(status = 'new') {
+  const data = await adminFetch(`/admin/inquiries?status=${status}`);
+  if (!data.success) return;
+  const container = document.getElementById('inquiries-list');
+  if (data.data.length === 0) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text3);padding:2rem">No inquiries found</div>';
+    return;
+  }
+  container.innerHTML = data.data.map(inq => {
+    const statusBadge = { new: 'badge-yellow', read: 'badge-purple', replied: 'badge-green', archived: 'badge-red' }[inq.status] || '';
+    return `<div class="panel" style="margin-bottom:1rem;border-left:3px solid ${inq.status === 'new' ? 'var(--yellow)' : inq.status === 'replied' ? 'var(--green)' : 'var(--accent)'}">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:.75rem">
+        <div>
+          <strong style="font-size:1rem">${esc(inq.name)}</strong>
+          <span style="margin-left:8px;font-size:.8rem;color:var(--text3)">${esc(inq.email)}</span>
+          <span class="badge ${statusBadge}" style="margin-left:8px">${inq.status}</span>
+        </div>
+        <span style="font-size:.75rem;color:var(--text3)">${new Date(inq.created_at).toLocaleString()}</span>
+      </div>
+      ${inq.subject ? `<div style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">📋 ${esc(inq.subject)}</div>` : ''}
+      <div style="font-size:.85rem;color:var(--text2);line-height:1.6;padding:1rem;background:var(--bg);border-radius:8px;margin-bottom:.75rem">${esc(inq.message)}</div>
+      ${inq.reply_message ? `<div style="font-size:.85rem;padding:1rem;background:rgba(0,184,148,0.05);border:1px solid rgba(0,184,148,0.15);border-radius:8px;margin-bottom:.75rem">
+        <strong style="color:var(--green)">↩ Reply (${esc(inq.replied_by || 'admin')}):</strong><br>${esc(inq.reply_message)}
+      </div>` : ''}
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        ${inq.status === 'new' ? `<button class="btn btn-secondary" onclick="markInquiryRead('${inq._id}')">👁️ Mark Read</button>` : ''}
+        <button class="btn btn-primary" onclick="showReplyBox('${inq._id}')">↩ Reply</button>
+        <button class="btn btn-danger" onclick="deleteInquiry('${inq._id}')">🗑️ Delete</button>
+        ${inq.status !== 'archived' ? `<button class="btn btn-secondary" onclick="archiveInquiry('${inq._id}')">📁 Archive</button>` : ''}
+      </div>
+      <div id="reply-box-${inq._id}" style="display:none;margin-top:1rem">
+        <textarea id="reply-msg-${inq._id}" class="form-input" rows="3" placeholder="Type your reply..." style="width:100%;margin-bottom:.5rem;resize:vertical"></textarea>
+        <button class="btn btn-success" onclick="sendInquiryReply('${inq._id}')">📧 Send Reply</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function showReplyBox(id) {
+  const box = document.getElementById(`reply-box-${id}`);
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  if (box.style.display === 'block') document.getElementById(`reply-msg-${id}`).focus();
+}
+async function sendInquiryReply(id) {
+  const msg = document.getElementById(`reply-msg-${id}`).value.trim();
+  if (!msg) { toast('Please enter a reply message'); return; }
+  await adminFetch(`/admin/inquiries/${id}/reply`, { method: 'POST', body: JSON.stringify({ reply_message: msg }) });
+  toast('Reply sent!'); loadAdminInquiries('all');
+}
+async function markInquiryRead(id) {
+  await adminFetch(`/admin/inquiries/${id}/status`, { method: 'PUT', body: JSON.stringify({ status: 'read' }) });
+  toast('Marked as read'); loadAdminInquiries('new');
+}
+async function archiveInquiry(id) {
+  await adminFetch(`/admin/inquiries/${id}/status`, { method: 'PUT', body: JSON.stringify({ status: 'archived' }) });
+  toast('Inquiry archived'); loadAdminInquiries('all');
+}
+async function deleteInquiry(id) {
+  if (!confirm('Delete this inquiry permanently?')) return;
+  await adminFetch(`/admin/inquiries/${id}`, { method: 'DELETE' });
+  toast('Inquiry deleted'); loadAdminInquiries('all');
 }
 
 // ---- Helpers ----

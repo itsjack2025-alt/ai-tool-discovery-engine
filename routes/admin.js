@@ -351,6 +351,28 @@ router.put('/inquiries/:id/status', authMiddleware(), async (req, res) => {
   }
 });
 
+router.post('/inquiries/:id/reply', authMiddleware(), async (req, res) => {
+  try {
+    const { reply_message } = req.body;
+    if (!reply_message || !reply_message.trim()) {
+      return res.status(400).json({ success: false, error: 'Reply message is required' });
+    }
+
+    const inquiry = await Inquiry.findByIdAndUpdate(req.params.id, {
+      reply_message: reply_message.trim(),
+      status: 'replied',
+      replied_by: req.admin.username,
+      replied_at: new Date(),
+    }, { new: true });
+
+    if (!inquiry) return res.status(404).json({ success: false, error: 'Inquiry not found' });
+    logger.info(`[Admin] Inquiry replied by ${req.admin.username} to ${inquiry.email}`);
+    res.json({ success: true, data: inquiry, message: 'Reply saved successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to reply to inquiry' });
+  }
+});
+
 router.delete('/inquiries/:id', authMiddleware(), async (req, res) => {
   try {
     await Inquiry.findByIdAndDelete(req.params.id);

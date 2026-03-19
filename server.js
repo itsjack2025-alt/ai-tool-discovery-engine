@@ -160,6 +160,20 @@ async function start() {
       await maintenanceAgent.runFullCycle();
     }, 10000);
 
+    // Auto-seed if database is empty
+    const AiTool = require('./models/AiTool');
+    const count = await AiTool.countDocuments();
+    if (count === 0) {
+      logger.info('🌱 Database is currently EMPTY. Running auto-seed to populate trending tools...');
+      const { execSync } = require('child_process');
+      try {
+        execSync('node scripts/seed.js', { env: process.env, stdio: 'inherit' });
+        logger.info('✅ Database auto-seeded successfully!');
+      } catch (err) {
+        logger.warn('⚠️ Auto-seed failed (if in cloud, it may take a minute). Details:', err.message);
+      }
+    }
+
     // Start Express server
     app.listen(PORT, () => {
       logger.info('');

@@ -1,0 +1,18 @@
+# AI Tool Discovery Engine - robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/admin/
+Disallow: /api/discovery/
+
+# Sitemap
+Sitemap: /sitemap.xml
+
+# Crawl-delay for polite bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2

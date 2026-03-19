@@ -1,0 +1,45 @@
+{
+  "name": "ai-tool-discovery-engine",
+  "version": "3.0.0",
+  "description": "Automated AI Tool Discovery Engine - discovers, analyzes, classifies, and ranks AI tools from across the internet",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "start:prod": "NODE_ENV=production node server.js",
+    "dev": "node --watch server.js",
+    "worker": "node workers/discoveryWorker.js",
+    "seed": "node scripts/seed.js",
+    "discover": "node scripts/runDiscovery.js",
+    "scheduler": "node services/scheduler/SchedulerService.js",
+    "deploy": "node deploy/agent.js",
+    "deploy:check": "node deploy/agent.js --yes",
+    "benchmark": "node deploy/benchmark.js",
+    "health": "curl -s http://localhost:${PORT:-3000}/api/health | node -e \"const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));console.log(d.status==='ok'?'✅ Healthy':'❌ Unhealthy')\""
+  },
+  "keywords": [
+    "ai",
+    "discovery",
+    "crawler",
+    "trending",
+    "tools"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.0",
+    "bullmq": "^5.12.0",
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "ioredis": "^5.4.0",
+    "mongoose": "^8.5.0",
+    "node-cron": "^3.0.3",
+    "natural": "^8.0.1",
+    "winston": "^3.14.0",
+    "p-limit": "^3.1.0",
+    "robots-parser": "^3.0.1"
+  }
+}

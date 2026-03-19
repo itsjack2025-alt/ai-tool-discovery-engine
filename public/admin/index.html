@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — AI Tool Discovery Engine</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg: #0a0a0f; --bg2: #12121a; --bg3: #16161f; --bg4: #1e1e2a;
+      --text: #f0f0f5; --text2: #a0a0b8; --text3: #6b6b82;
+      --accent: #6c5ce7; --accent2: #a29bfe; --green: #00b894;
+      --red: #e17055; --yellow: #fdcb6e; --teal: #00cec9;
+      --border: rgba(255,255,255,0.06); --radius: 12px;
+    }
+    html { font-size: 15px; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { color: var(--accent2); text-decoration: none; }
+    input, select, textarea, button { font-family: inherit; }
+
+    /* Login Screen */
+    .login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh;
+      background: radial-gradient(ellipse at top, rgba(108,92,231,0.08), transparent 60%); }
+    .login-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px;
+      padding: 3rem; width: 400px; max-width: 90vw; }
+    .login-box h1 { font-size: 1.5rem; margin-bottom: .5rem; text-align: center; }
+    .login-box p { color: var(--text3); text-align: center; margin-bottom: 2rem; font-size: .85rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-size: .8rem; font-weight: 600; color: var(--text2);
+      margin-bottom: .4rem; text-transform: uppercase; letter-spacing: .5px; }
+    .form-input { width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: .9rem; outline: none; transition: border .2s; }
+    .form-input:focus { border-color: var(--accent); }
+    .btn-login { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 8px; color: #fff; font-weight: 700; font-size: .9rem; cursor: pointer;
+      transition: all .2s; }
+    .btn-login:hover { box-shadow: 0 4px 20px rgba(108,92,231,.4); transform: translateY(-1px); }
+    .login-error { background: rgba(225,112,85,.1); color: var(--red); padding: 8px 12px;
+      border-radius: 6px; font-size: .8rem; margin-bottom: 1rem; display: none; }
+
+    /* Admin Layout */
+    .admin-layout { display: none; }
+    .admin-sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 240px; background: var(--bg2);
+      border-right: 1px solid var(--border); padding: 1.5rem 0; overflow-y: auto; z-index: 50; }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 0 1.5rem 1.5rem;
+      border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+    .sidebar-logo span { font-weight: 700; font-size: 1rem; background: linear-gradient(135deg, var(--accent), var(--teal));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-section { padding: 0 .75rem; margin-bottom: .5rem; }
+    .nav-section-label { font-size: .65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text3); padding: 0 .75rem; margin-bottom: .5rem; }
+    .nav-link { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px;
+      color: var(--text2); font-size: .85rem; font-weight: 500; cursor: pointer; transition: all .15s;
+      border: none; background: none; width: 100%; text-align: left; }
+    .nav-link:hover { background: rgba(108,92,231,.08); color: var(--text); }
+    .nav-link.active { background: rgba(108,92,231,.15); color: var(--accent2); }
+    .nav-link .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+
+    .admin-main { margin-left: 240px; padding: 2rem; min-height: 100vh; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .admin-header h2 { font-size: 1.5rem; font-weight: 700; }
+    .admin-header .user-info { display: flex; align-items: center; gap: 10px; color: var(--text2); font-size: .85rem; }
+
+    /* Stats Cards */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem; transition: all .2s; }
+    .stat-card:hover { border-color: rgba(108,92,231,.2); transform: translateY(-2px); }
+    .stat-card .stat-icon { font-size: 1.5rem; margin-bottom: .5rem; }
+    .stat-card .stat-val { font-size: 1.8rem; font-weight: 800; font-family: 'JetBrains Mono'; color: var(--accent2); }
+    .stat-card .stat-lbl { font-size: .75rem; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+
+    /* Panel */
+    .panel { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.5rem; margin-bottom: 1.5rem; }
+    .panel-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex;
+      align-items: center; gap: 8px; }
+
+    /* Settings Form */
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .setting-item { display: flex; flex-direction: column; gap: 4px; }
+    .setting-item label { font-size: .8rem; font-weight: 600; color: var(--text2); }
+    .setting-item input, .setting-item select, .setting-item textarea {
+      padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-size: .85rem; outline: none; }
+    .setting-item input:focus, .setting-item select:focus, .setting-item textarea:focus {
+      border-color: var(--accent); }
+    .setting-item textarea { resize: vertical; min-height: 60px; }
+
+    /* Toggle Switch */
+    .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--bg4); border-radius: 24px;
+      cursor: pointer; transition: .3s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px;
+      bottom: 3px; background: var(--text3); border-radius: 50%; transition: .3s; }
+    .toggle-switch input:checked + .toggle-slider { background: var(--green); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); background: #fff; }
+
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0;
+      border-bottom: 1px solid var(--border); }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label { font-size: .85rem; font-weight: 500; }
+    .toggle-desc { font-size: .75rem; color: var(--text3); }
+
+    /* Buttons */
+    .btn { padding: 8px 18px; border-radius: 8px; font-size: .8rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .15s; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+    .btn-primary:hover { box-shadow: 0 4px 15px rgba(108,92,231,.3); }
+    .btn-danger { background: rgba(225,112,85,.15); color: var(--red); }
+    .btn-success { background: rgba(0,184,148,.15); color: var(--green); }
+    .btn-secondary { background: var(--bg4); color: var(--text2); border: 1px solid var(--border); }
+    .btn-group { display: flex; gap: 8px; margin-top: 1rem; }
+
+    /* Table */
+    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table th { text-align: left; padding: 10px 12px; font-size: .75rem; text-transform: uppercase;
+      letter-spacing: .5px; color: var(--text3); border-bottom: 1px solid var(--border); }
+    .admin-table td { padding: 10px 12px; font-size: .85rem; border-bottom: 1px solid var(--border); }
+    .admin-table tr:hover td { background: rgba(108,92,231,.03); }
+    .badge { padding: 3px 8px; border-radius: 50px; font-size: .7rem; font-weight: 600; }
+    .badge-green { background: rgba(0,184,148,.12); color: var(--green); }
+    .badge-yellow { background: rgba(253,203,110,.12); color: var(--yellow); }
+    .badge-red { background: rgba(225,112,85,.12); color: var(--red); }
+    .badge-purple { background: rgba(108,92,231,.12); color: var(--accent2); }
+
+    /* View sections */
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    /* Toast */
+    .admin-toast { position: fixed; bottom: 2rem; right: 2rem; padding: 12px 20px; background: var(--bg3);
+      border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: .85rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5); z-index: 200; animation: slideUp .3s ease; display: none; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    @media (max-width: 768px) {
+      .admin-sidebar { width: 60px; }
+      .admin-sidebar .nav-link span:not(.icon) { display: none; }
+      .sidebar-logo span { display: none; }
+      .admin-main { margin-left: 60px; padding: 1rem; }
+      .settings-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <h1>⚙️ Admin Panel</h1>
+    <p>AI Tool Discovery Engine — Management Dashboard</p>
+    <div class="login-error" id="login-error"></div>
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" class="form-input" id="login-username" placeholder="admin" required autofocus>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-login" id="btn-login">Sign In</button>
+    </form>
+    <p style="text-align:center; margin-top:1.5rem; font-size:.75rem; color:var(--text3)">
+      <a href="/">← Back to public dashboard</a>
+    </p>
+  </div>
+</div>
+
+<!-- Admin Layout -->
+<div class="admin-layout" id="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">
+      <span style="font-size:1.5rem">🤖</span>
+      <span>ATDE Admin</span>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Dashboard</div>
+      <button class="nav-link active" onclick="showView('overview')"><span class="icon">📊</span><span>Overview</span></button>
+      <button class="nav-link" onclick="showView('tools')"><span class="icon">🛠️</span><span>Tools</span></button>
+      <button class="nav-link" onclick="showView('submissions')"><span class="icon">📩</span><span>Submissions</span></button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Settings</div>
+      <button class="nav-link" onclick="showView('ads')"><span class="icon">📺</span><span>Ads</span></button>
+      <button class="nav-link" onclick="showView('settings')"><span class="icon">⚙️</span><span>General</span></button>
+      <button class="nav-link" onclick="showView('seo')"><span class="icon">🔍</span><span>SEO</span></button>
+      <button class="nav-link" onclick="showView('features')"><span class="icon">🧩</span><span>Features</span></button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">System</div>
+      <button class="nav-link" onclick="showView('deployment')"><span class="icon">🚀</span><span>Deployment</span></button>
+      <button class="nav-link" onclick="showView('users')"><span class="icon">👥</span><span>Users</span></button>
+      <button class="nav-link" onclick="showView('scheduler')"><span class="icon">⏰</span><span>Scheduler</span></button>
+    </div>
+
+    <div class="nav-section" style="margin-top:auto; padding-top:1rem; border-top:1px solid var(--border)">
+      <button class="nav-link" onclick="window.open('/', '_blank')"><span class="icon">🌐</span><span>View Site</span></button>
+      <button class="nav-link" onclick="logout()" style="color:var(--red)"><span class="icon">🚪</span><span>Logout</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-header">
+      <h2 id="view-title">📊 Overview</h2>
+      <div class="user-info"><span id="user-display">admin</span> · <a href="#" onclick="logout()">Logout</a></div>
+    </div>
+
+    <!-- Overview View -->
+    <div class="view-section active" id="view-overview">
+      <div class="stats-grid" id="admin-stats"></div>
+      <!-- Live Analytics Panel -->
+      <div class="panel" style="margin-bottom:1.5rem;">
+        <div class="panel-title">📡 Real-Time Analytics</div>
+        <div class="stats-grid" id="live-analytics-stats">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-val" id="admin-live-visitors" style="color:var(--green)">—</div>
+            <div class="stat-lbl">Active Visitors</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📡</div>
+            <div class="stat-val" id="admin-rpm" style="color:var(--teal)">—</div>
+            <div class="stat-lbl">Requests / Min</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-val" id="admin-response-time" style="color:var(--accent2)">—</div>
+            <div class="stat-lbl">Avg Response</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-val" id="admin-uptime" style="color:var(--yellow)">—</div>
+            <div class="stat-lbl">Uptime</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">🔥 Quick Actions</div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="runDiscovery()">🚀 Run Discovery Pipeline</button>
+          <button class="btn btn-secondary" onclick="showView('tools')">🛠️ Manage Tools</button>
+          <button class="btn btn-secondary" onclick="showView('ads')">📺 Ad Settings</button>
+          <button class="btn btn-secondary" onclick="showView('deployment')">🚀 Deploy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools View -->
+    <div class="view-section" id="view-tools">
+      <div class="panel">
+        <div class="panel-title">🛠️ All AI Tools</div>
+        <div style="margin-bottom:1rem">
+          <input class="form-input" id="tool-search" placeholder="Search tools..." style="max-width:300px"
+            oninput="loadAdminTools()">
+        </div>
+        <table class="admin-table" id="tools-table">
+          <thead><tr><th>Name</th><th>Category</th><th>Score</th><th>Direction</th><th>Source</th><th>Actions</th></tr></thead>
+          <tbody id="tools-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Submissions View -->
+    <div class="view-section" id="view-submissions">
+      <div class="panel">
+        <div class="panel-title">📩 Pending Submissions</div>
+        <table class="admin-table">
+          <thead><tr><th>Name</th><th>Website</th><th>Category</th><th>Submitter</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="submissions-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Ads View -->
+    <div class="view-section" id="view-ads">
+      <div class="panel">
+        <div class="panel-title">📺 Advertisement Management</div>
+        <p style="font-size:.85rem;color:var(--text2);margin-bottom:1.5rem">
+          Configure and manage ads across your platform. Supports Google AdSense, Carbon Ads, 
+          Ethical Ads, and custom ad code.
+        </p>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Enable Ads</div>
+            <div class="toggle-desc">Master toggle — shows/hides all ads site-wide</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="ads-enabled" onchange="toggleAds()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div id="ads-config-section" style="margin-top:1.5rem">
+          <div class="settings-grid">
+            <div class="setting-item">
+              <label>Ad Provider</label>
+              <select id="ads-provider">
+                <option value="adsense">Google AdSense</option>
+                <option value="carbon">Carbon Ads</option>
+                <option value="ethicalads">Ethical Ads</option>
+                <option value="custom">Custom Code</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <label>AdSense Publisher ID</label>
+              <input type="text" id="ads-client-id" placeholder="ca-pub-XXXXXXXXXXXXX">
+            </div>
+            <div class="setting-item">
+              <label>Header Ad Slot</label>
+              <input type="text" id="ads-slot-header" placeholder="1234567890">
+            </div>
+            <div class="setting-item">
+              <label>Sidebar Ad Slot</label>
+              <input type="text" id="ads-slot-sidebar" placeholder="1234567890">
+            </div>
+            <div class="setting-item">
+              <label>Inline Ad Slot (between tool cards)</label>
+              <input type="text" id="ads-slot-inline" placeholder="1234567890">
+            </div>
+            <div class="setting-item">
+              <label>Show ad every N cards</label>
+              <input type="number" id="ads-frequency" value="5" min="2" max="20">
+            </div>
+            <div class="setting-item">
+              <label>Max ads per page</label>
+              <input type="number" id="ads-max" value="3" min="1" max="10">
+            </div>
+          </div>
+
+          <div class="setting-item" style="margin-top:1rem">
+            <label>Custom Header Ad Code (HTML)</label>
+            <textarea id="ads-custom-header" placeholder="<script>...</script>"></textarea>
+          </div>
+          <div class="setting-item" style="margin-top:.5rem">
+            <label>Custom Footer Ad Code (HTML)</label>
+            <textarea id="ads-custom-footer" placeholder="<script>...</script>"></textarea>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="saveAdConfig()">💾 Save Ad Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings View -->
+    <div class="view-section" id="view-settings">
+      <div class="panel">
+        <div class="panel-title">⚙️ General Settings</div>
+        <div class="settings-grid" id="general-settings"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveSettings('general')">💾 Save Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO View -->
+    <div class="view-section" id="view-seo">
+      <div class="panel">
+        <div class="panel-title">🔍 SEO & Analytics</div>
+        <div class="settings-grid" id="seo-settings"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveSettings('seo')">💾 Save SEO Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features View -->
+    <div class="view-section" id="view-features">
+      <div class="panel">
+        <div class="panel-title">🧩 Feature Toggles</div>
+        <div id="feature-toggles"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveFeatureToggles()">💾 Save Features</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deployment View -->
+    <div class="view-section" id="view-deployment">
+      <div class="panel">
+        <div class="panel-title">🚀 Deployment Agent</div>
+        <p style="font-size:.85rem;color:var(--text2);margin-bottom:1.5rem">
+          Configure deployment settings. The autonomous deployment agent will use these to 
+          publish your application to your custom domain.
+        </p>
+        <div class="settings-grid" id="deploy-settings"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveSettings('deployment')">💾 Save Deploy Config</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users View -->
+    <div class="view-section" id="view-users">
+      <div class="panel">
+        <div class="panel-title">👥 Admin Users</div>
+        <table class="admin-table">
+          <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Last Login</th><th>Status</th></tr></thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Scheduler View -->
+    <div class="view-section" id="view-scheduler">
+      <div class="panel">
+        <div class="panel-title">⏰ Scheduler Status</div>
+        <div id="scheduler-info"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="runDiscovery()">🚀 Run Full Pipeline</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="admin-toast" id="admin-toast"></div>
+
+<script>
+const API = '/api';
+let token = localStorage.getItem('admin_token');
+let currentUser = null;
+
+// ---- Auth ----
+async function handleLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+  const errorEl = document.getElementById('login-error');
+
+  try {
+    const res = await fetch(`${API}/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      token = data.token;
+      currentUser = data.user;
+      localStorage.setItem('admin_token', token);
+      showAdmin();
+    } else {
+      errorEl.textContent = data.error || 'Login failed';
+      errorEl.style.display = 'block';
+    }
+  } catch (err) {
+    errorEl.textContent = 'Connection error';
+    errorEl.style.display = 'block';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('admin_token');
+  token = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-layout').style.display = 'none';
+}
+
+async function checkAuth() {
+  if (!token) return false;
+  try {
+    const res = await fetch(`${API}/admin/me`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const data = await res.json();
+    if (data.success) {
+      currentUser = data.data;
+      return true;
+    }
+  } catch {}
+  return false;
+}
+
+async function showAdmin() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-layout').style.display = 'block';
+  document.getElementById('user-display').textContent = currentUser?.username || 'admin';
+  loadOverview();
+}
+
+// ---- API Helper ----
+async function adminFetch(endpoint, options = {}) {
+  const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...(options.headers || {}) };
+  const res = await fetch(`${API}${endpoint}`, { ...options, headers });
+  return res.json();
+}
+
+// ---- Views ----
+function showView(view) {
+  document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(`view-${view}`)?.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  event?.target?.closest('.nav-link')?.classList.add('active');
+
+  const titles = {
+    overview: '📊 Overview', tools: '🛠️ Tools', submissions: '📩 Submissions',
+    ads: '📺 Ads', settings: '⚙️ General', seo: '🔍 SEO', features: '🧩 Features',
+    deployment: '🚀 Deployment', users: '👥 Users', scheduler: '⏰ Scheduler',
+  };
+  document.getElementById('view-title').textContent = titles[view] || view;
+
+  const loaders = {
+    overview: loadOverview, tools: loadAdminTools, submissions: loadSubmissions,
+    ads: loadAdConfig, settings: () => loadSettingsForm('general'),
+    seo: () => loadSettingsForm('seo'), features: loadFeatureToggles,
+    deployment: () => loadSettingsForm('deployment'), users: loadUsers,
+    scheduler: loadScheduler,
+  };
+  loaders[view]?.();
+}
+
+// ---- Overview ----
+async function loadOverview() {
+  const data = await adminFetch('/admin/analytics');
+  if (!data.success) return;
+  const s = data.data;
+
+  document.getElementById('admin-stats').innerHTML = [
+    { icon: '🛠️', val: s.active_tools, label: 'Active Tools' },
+    { icon: '📂', val: s.categories?.length || 0, label: 'Categories' },
+    { icon: '📩', val: s.pending_submissions, label: 'Pending' },
+    { icon: '📈', val: s.max_trend_score, label: 'Top Score' },
+    { icon: '📊', val: s.avg_trend_score, label: 'Avg Score' },
+    { icon: '🗑️', val: s.inactive_tools, label: 'Inactive' },
+  ].map(c => `<div class="stat-card"><div class="stat-icon">${c.icon}</div><div class="stat-val">${c.val}</div><div class="stat-lbl">${c.label}</div></div>`).join('');
+
+  // Load real-time analytics
+  loadLiveAnalytics();
+  // Refresh every 10 seconds
+  if (!window._liveAnalyticsInterval) {
+    window._liveAnalyticsInterval = setInterval(loadLiveAnalytics, 10000);
+  }
+}
+
+async function loadLiveAnalytics() {
+  try {
+    const data = await adminFetch('/admin/traffic');
+    if (!data.success || !data.data) return;
+    const t = data.data;
+    const visitorsEl = document.getElementById('admin-live-visitors');
+    const rpmEl = document.getElementById('admin-rpm');
+    const responseEl = document.getElementById('admin-response-time');
+    const uptimeEl = document.getElementById('admin-uptime');
+    if (visitorsEl) visitorsEl.textContent = t.activeConnections || 0;
+    if (rpmEl) rpmEl.textContent = t.requestsPerMinute || 0;
+    if (responseEl) responseEl.textContent = t.avgResponseTime || '0ms';
+    if (uptimeEl) uptimeEl.textContent = t.uptimeFormatted || '0s';
+  } catch (e) {
+    // Silently fail
+  }
+}
+
+// ---- Tools ----
+async function loadAdminTools() {
+  const search = document.getElementById('tool-search')?.value || '';
+  const data = await adminFetch(`/admin/tools?limit=50&search=${encodeURIComponent(search)}`);
+  if (!data.success) return;
+
+  document.getElementById('tools-tbody').innerHTML = data.data.map(t => {
+    const dir = { rising: '↑ Rising', stable: '→ Stable', declining: '↓ Declining', new: '✦ New' }[t.trend_direction] || '';
+    const dirClass = { rising: 'badge-green', stable: 'badge-purple', declining: 'badge-red', new: 'badge-yellow' }[t.trend_direction] || '';
+    return `<tr>
+      <td><strong>${esc(t.name)}</strong></td>
+      <td>${esc(t.category)}</td>
+      <td style="font-family:'JetBrains Mono';font-weight:700">${t.trend_score?.toFixed(1)}</td>
+      <td><span class="badge ${dirClass}">${dir}</span></td>
+      <td>${esc(t.source)}</td>
+      <td>
+        <button class="btn btn-secondary" style="font-size:.7rem;padding:4px 8px" onclick="editTool('${t._id}')">Edit</button>
+        <button class="btn btn-danger" style="font-size:.7rem;padding:4px 8px" onclick="deleteTool('${t._id}','${esc(t.name)}')">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function deleteTool(id, name) {
+  if (!confirm(`Deactivate "${name}"?`)) return;
+  await adminFetch(`/admin/tools/${id}`, { method: 'DELETE' });
+  toast('Tool deactivated');
+  loadAdminTools();
+}
+
+function editTool(id) { toast('Edit modal coming soon — use API directly for now'); }
+
+// ---- Submissions ----
+async function loadSubmissions() {
+  const data = await adminFetch('/admin/submissions');
+  if (!data.success) return;
+
+  document.getElementById('submissions-tbody').innerHTML = data.data.length === 0
+    ? '<tr><td colspan="6" style="text-align:center;color:var(--text3)">No pending submissions</td></tr>'
+    : data.data.map(s => `<tr>
+      <td><strong>${esc(s.name)}</strong></td>
+      <td><a href="${esc(s.website)}" target="_blank">${esc(s.website)}</a></td>
+      <td>${esc(s.category)}</td>
+      <td>${esc(s.submitter_name || 'Anonymous')}</td>
+      <td>${new Date(s.created_at).toLocaleDateString()}</td>
+      <td>
+        <button class="btn btn-success" style="font-size:.7rem;padding:4px 8px" onclick="approveSubmission('${s._id}')">✓</button>
+        <button class="btn btn-danger" style="font-size:.7rem;padding:4px 8px" onclick="rejectSubmission('${s._id}')">✗</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function approveSubmission(id) {
+  await adminFetch(`/admin/submissions/${id}/approve`, { method: 'PUT' });
+  toast('Submission approved!');
+  loadSubmissions();
+}
+
+async function rejectSubmission(id) {
+  await adminFetch(`/admin/submissions/${id}/reject`, { method: 'PUT', body: JSON.stringify({ notes: 'Rejected by admin' }) });
+  toast('Submission rejected');
+  loadSubmissions();
+}
+
+// ---- Ad Config ----
+async function loadAdConfig() {
+  const data = await adminFetch('/admin/ads/config');
+  if (!data.success) return;
+
+  const settings = {};
+  data.data.forEach(s => { settings[s.key] = s.value; });
+
+  document.getElementById('ads-enabled').checked = settings.ads_enabled || false;
+  document.getElementById('ads-provider').value = settings.ads_provider || 'adsense';
+  document.getElementById('ads-client-id').value = settings.adsense_client_id || '';
+  document.getElementById('ads-slot-header').value = settings.adsense_slot_header || '';
+  document.getElementById('ads-slot-sidebar').value = settings.adsense_slot_sidebar || '';
+  document.getElementById('ads-slot-inline').value = settings.adsense_slot_inline || '';
+  document.getElementById('ads-frequency').value = settings.ads_frequency || 5;
+  document.getElementById('ads-max').value = settings.ads_max_per_page || 3;
+  document.getElementById('ads-custom-header').value = settings.ads_custom_code_header || '';
+  document.getElementById('ads-custom-footer').value = settings.ads_custom_code_footer || '';
+}
+
+async function toggleAds() {
+  const enabled = document.getElementById('ads-enabled').checked;
+  await adminFetch('/admin/ads/toggle', { method: 'PUT', body: JSON.stringify({ enabled }) });
+  toast(enabled ? 'Ads enabled 📺' : 'Ads disabled');
+}
+
+async function saveAdConfig() {
+  await adminFetch('/admin/ads/config', {
+    method: 'PUT',
+    body: JSON.stringify({
+      provider: document.getElementById('ads-provider').value,
+      client_id: document.getElementById('ads-client-id').value,
+      slots: {
+        header: document.getElementById('ads-slot-header').value,
+        sidebar: document.getElementById('ads-slot-sidebar').value,
+        inline: document.getElementById('ads-slot-inline').value,
+      },
+      frequency: document.getElementById('ads-frequency').value,
+      max_per_page: document.getElementById('ads-max').value,
+      custom_code: {
+        header: document.getElementById('ads-custom-header').value,
+        footer: document.getElementById('ads-custom-footer').value,
+      },
+    }),
+  });
+  toast('Ad settings saved!');
+}
+
+// ---- Settings Form ----
+async function loadSettingsForm(category) {
+  const data = await adminFetch(`/admin/settings?category=${category}`);
+  if (!data.success) return;
+
+  const container = document.getElementById(`${category === 'general' ? 'general' : category === 'seo' ? 'seo' : 'deploy'}-settings`);
+  if (!container) return;
+
+  container.innerHTML = data.data.map(s => {
+    const type = typeof s.value === 'boolean' ? 'checkbox' : typeof s.value === 'number' ? 'number' : 'text';
+    const val = type === 'checkbox' ? (s.value ? 'checked' : '') : `value="${esc(String(s.value || ''))}"`;
+    return `<div class="setting-item">
+      <label>${esc(s.description || s.key)}</label>
+      <input type="${type}" class="setting-input" data-key="${s.key}" ${val}>
+    </div>`;
+  }).join('');
+}
+
+async function saveSettings(category) {
+  const container = document.getElementById(`${category === 'general' ? 'general' : category === 'seo' ? 'seo' : 'deploy'}-settings`);
+  const inputs = container.querySelectorAll('.setting-input');
+  const updates = {};
+
+  inputs.forEach(input => {
+    const key = input.dataset.key;
+    updates[key] = input.type === 'checkbox' ? input.checked : input.type === 'number' ? Number(input.value) : input.value;
+  });
+
+  await adminFetch('/admin/settings', { method: 'PUT', body: JSON.stringify(updates) });
+  toast('Settings saved!');
+}
+
+// ---- Feature Toggles ----
+async function loadFeatureToggles() {
+  const data = await adminFetch('/admin/settings?category=features');
+  if (!data.success) return;
+
+  document.getElementById('feature-toggles').innerHTML = data.data.map(s => `
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">${esc(s.description || s.key)}</div>
+        <div class="toggle-desc">${esc(s.key)}</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" class="feature-toggle" data-key="${s.key}" ${s.value ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  `).join('');
+}
+
+async function saveFeatureToggles() {
+  const toggles = document.querySelectorAll('.feature-toggle');
+  const updates = {};
+  toggles.forEach(t => { updates[t.dataset.key] = t.checked; });
+  await adminFetch('/admin/settings', { method: 'PUT', body: JSON.stringify(updates) });
+  toast('Feature toggles saved!');
+}
+
+// ---- Users ----
+async function loadUsers() {
+  const data = await adminFetch('/admin/users');
+  if (!data.success) return;
+
+  document.getElementById('users-tbody').innerHTML = data.data.map(u => `<tr>
+    <td><strong>${esc(u.username)}</strong></td>
+    <td>${esc(u.email)}</td>
+    <td><span class="badge badge-purple">${u.role}</span></td>
+    <td>${u.last_login ? new Date(u.last_login).toLocaleString() : 'Never'}</td>
+    <td><span class="badge ${u.is_active ? 'badge-green' : 'badge-red'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
+  </tr>`).join('');
+}
+
+// ---- Scheduler ----
+async function loadScheduler() {
+  const data = await adminFetch('/scheduler/status');
+  if (!data.success) return;
+  const s = data.data;
+
+  document.getElementById('scheduler-info').innerHTML = `
+    <div style="margin-bottom:1rem">
+      <span class="badge ${s.isRunning ? 'badge-yellow' : 'badge-green'}">${s.isRunning ? '⏳ Running' : '✅ Idle'}</span>
+    </div>
+    <h4 style="margin-bottom:.8rem;font-size:.9rem">Scheduled Jobs</h4>
+    ${(s.scheduledJobs || []).map(j => `<div style="padding:6px 0;font-size:.85rem;color:var(--text2)">📅 <strong>${j.name}</strong> — <code style="color:var(--accent2)">${j.cron}</code></div>`).join('')}
+    ${s.lastRun ? `<div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:8px;font-size:.8rem">
+      <strong>Last Run:</strong> ${s.lastRun.type} — ${s.lastRun.duration} — ${s.lastRun.toolsProcessed || 0} tools processed
+    </div>` : ''}
+  `;
+}
+
+// ---- Discovery ----
+async function runDiscovery() {
+  const data = await adminFetch('/discovery/run', { method: 'POST' });
+  toast(data.message || 'Discovery started!');
+}
+
+// ---- Helpers ----
+function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function toast(msg) {
+  const t = document.getElementById('admin-toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// Init
+(async () => {
+  if (await checkAuth()) {
+    showAdmin();
+  }
+})();
+</script>
+</body>
+</html>

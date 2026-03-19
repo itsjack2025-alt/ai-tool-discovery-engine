@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Tool Discovery Engine - Discover, analyze, and track the hottest AI tools trending worldwide. Daily updates, AI chatbot Jack, reviews, and more.">
+  <meta name="keywords" content="AI tools, artificial intelligence, trending, discovery, machine learning, generative AI, chatbot, reviews">
+  <title>AI Tool Discovery Engine — Top Trending AI Tools Worldwide</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AI Tool Discovery Engine",
+    "description": "Discover, analyze, and track the hottest AI tools trending worldwide. Updated daily with automated discovery from GitHub, Product Hunt, Hacker News, and more.",
+    "url": "https://aitool.discovery",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AI Tool Discovery Engine"
+    }
+  }
+  </script>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="AI Tool Discovery Engine — Top Trending AI Tools">
+  <meta property="og:description" content="Discover the most powerful AI tools shaping the future. Updated daily with automated discovery from 50+ sources.">
+  <meta property="og:site_name" content="AI Tool Discovery Engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Tool Discovery Engine — Top Trending AI Tools">
+  <meta name="twitter:description" content="Discover the most powerful AI tools shaping the future. Updated daily.">
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-animation" aria-hidden="true">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="/" class="logo" id="main-logo">
+        <div class="logo-icon-animated">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="36" y2="36">
+                <stop offset="0%" stop-color="#6c5ce7"/>
+                <stop offset="50%" stop-color="#00cec9"/>
+                <stop offset="100%" stop-color="#fd79a8"/>
+              </linearGradient>
+              <linearGradient id="spark-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#a29bfe"/>
+                <stop offset="100%" stop-color="#00cec9"/>
+              </linearGradient>
+            </defs>
+            <circle cx="18" cy="18" r="17" stroke="url(#logo-grad)" stroke-width="2" fill="rgba(108,92,231,0.08)" class="logo-ring"/>
+            <path d="M12 14 C12 11, 15 9, 18 9 C21 9, 24 11, 24 14 L24 16 C24 17, 23 18, 22 18 L14 18 C13 18, 12 17, 12 16 Z" fill="url(#logo-grad)" class="logo-head"/>
+            <circle cx="15" cy="13.5" r="1.2" fill="#fff" class="logo-eye-l"/>
+            <circle cx="21" cy="13.5" r="1.2" fill="#fff" class="logo-eye-r"/>
+            <rect x="14" y="20" width="8" height="6" rx="2" fill="url(#spark-grad)" class="logo-body"/>
+            <path d="M10 26 L14 22" stroke="url(#logo-grad)" stroke-width="1.5" stroke-linecap="round" class="logo-arm-l"/>
+            <path d="M26 26 L22 22" stroke="url(#logo-grad)" stroke-width="1.5" stroke-linecap="round" class="logo-arm-r"/>
+            <circle cx="7" cy="8" r="1.5" fill="#fdcb6e" class="logo-spark-1"/>
+            <circle cx="30" cy="10" r="1" fill="#fd79a8" class="logo-spark-2"/>
+            <circle cx="28" cy="28" r="1.2" fill="#00cec9" class="logo-spark-3"/>
+          </svg>
+        </div>
+        <span class="logo-text-new">
+          <span class="logo-text-ai">AI</span>
+          <span class="logo-text-tool">Tool</span>
+          <span class="logo-text-discovery">Discovery</span>
+          <span class="logo-text-engine">Engine</span>
+        </span>
+      </a>
+
+      <nav class="header-nav">
+        <button class="nav-item active" data-view="trending" id="nav-trending">🔥 Trending</button>
+        <button class="nav-item" data-view="categories" id="nav-categories">📂 Categories</button>
+        <button class="nav-item" data-view="innovations" id="nav-innovations">🚀 Innovations</button>
+        <button class="nav-item" data-view="reviews" id="nav-reviews">⭐ Reviews</button>
+      </nav>
+
+      <div class="search-bar" id="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search trending AI tools..." aria-label="Search AI tools">
+        <div class="search-results-dropdown" id="search-results-dropdown" style="display:none;"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-badge">
+          <span class="pulse"></span>
+          Auto-updating — Last refreshed <span id="last-updated">just now</span>
+        </div>
+        <h1>
+          Top AI Tools<br>
+          <span class="gradient-text">Trending Worldwide</span>
+        </h1>
+        <p class="hero-subtitle">
+          Discover the most powerful AI tools shaping the future. Our engine crawls GitHub, Product Hunt, 
+          Hacker News, and 50+ sources daily to find and rank the best AI tools.
+        </p>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="stats-bar">
+          <div class="stat">
+            <div class="stat-value" id="stat-total">—</div>
+            <div class="stat-label">Total Tools</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="stat-categories">—</div>
+            <div class="stat-label">Categories</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="stat-sources">4</div>
+            <div class="stat-label">Data Sources</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="stat-rising">—</div>
+            <div class="stat-label">Rising Today</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Visitor Counter -->
+    <div class="container">
+      <div class="status-bar" id="status-bar">
+        <div class="status-indicator">
+          <div class="status-dot" id="status-dot"></div>
+          <span class="status-text" id="status-text">
+            <span class="live-visitors-wrapper">
+              <span class="live-dot"></span>
+              <span id="live-visitor-count">—</span> visitors online now
+            </span>
+          </span>
+        </div>
+        <div class="status-actions">
+          <button class="btn btn-secondary" id="btn-refresh" onclick="loadDashboard()">↻ Refresh</button>
+          <button class="btn btn-primary" id="btn-discover" onclick="triggerDiscovery()">🚀 Run Discovery</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== TRENDING AI INNOVATIONS SECTION ====== -->
+    <div class="container" id="innovations-section" style="display:none;">
+      <div class="innovations-wrapper">
+        <h2 class="section-title" style="margin-bottom: 1.5rem;">🚀 Trending AI Technologies & Innovations</h2>
+        <div class="innovations-grid" id="innovations-grid">
+          <!-- AI Innovation Cards -->
+          <div class="innovation-card innovation-hot">
+            <div class="innovation-badge">🔥 Hot</div>
+            <div class="innovation-icon">🧠</div>
+            <h3>Multi-Modal AI</h3>
+            <p>Models that process text, images, audio, and video simultaneously. GPT-4o, Gemini, and Claude lead the charge.</p>
+            <div class="innovation-tags">
+              <span>LLM</span><span>Vision</span><span>Audio</span>
+            </div>
+          </div>
+          <div class="innovation-card innovation-rising">
+            <div class="innovation-badge">📈 Rising</div>
+            <div class="innovation-icon">🤖</div>
+            <h3>AI Agents</h3>
+            <p>Autonomous AI systems that plan, execute, and iterate on complex tasks independently. The future of automation.</p>
+            <div class="innovation-tags">
+              <span>Automation</span><span>Planning</span><span>Tools</span>
+            </div>
+          </div>
+          <div class="innovation-card innovation-new">
+            <div class="innovation-badge">✨ New</div>
+            <div class="innovation-icon">🎨</div>
+            <h3>Video Generation</h3>
+            <p>Text-to-video AI has arrived. Sora, Runway, and Pika are transforming content creation at incredible speed.</p>
+            <div class="innovation-tags">
+              <span>Video</span><span>Creative</span><span>Generative</span>
+            </div>
+          </div>
+          <div class="innovation-card innovation-upcoming">
+            <div class="innovation-badge">🔮 Upcoming</div>
+            <div class="innovation-icon">💻</div>
+            <h3>AI-Native IDEs</h3>
+            <p>Development environments built around AI from the ground up. Cursor, Devin, and Windsurf are pioneering this space.</p>
+            <div class="innovation-tags">
+              <span>Coding</span><span>IDE</span><span>Developer</span>
+            </div>
+          </div>
+          <div class="innovation-card innovation-hot">
+            <div class="innovation-badge">🔥 Hot</div>
+            <div class="innovation-icon">🔒</div>
+            <h3>Local AI / Edge AI</h3>
+            <p>Run powerful AI models directly on your device — no cloud needed. Privacy-first, offline-capable intelligence.</p>
+            <div class="innovation-tags">
+              <span>Privacy</span><span>Local</span><span>Edge</span>
+            </div>
+          </div>
+          <div class="innovation-card innovation-rising">
+            <div class="innovation-badge">📈 Rising</div>
+            <div class="innovation-icon">🎵</div>
+            <h3>AI Music & Voice</h3>
+            <p>Create professional music, clone voices, and generate audio content with AI. Suno, ElevenLabs, and more.</p>
+            <div class="innovation-tags">
+              <span>Audio</span><span>Music</span><span>Voice</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Curated Recommendations -->
+        <h2 class="section-title" style="margin: 2.5rem 0 1.5rem;">💡 Curated Recommendations</h2>
+        <div class="recommendations-grid" id="recommendations-grid">
+          <div class="recommendation-card">
+            <div class="rec-header">
+              <span class="rec-badge rec-beginner">Beginner</span>
+              <span class="rec-category">Getting Started</span>
+            </div>
+            <h3>Best AI Tools for Beginners</h3>
+            <p>Start your AI journey with user-friendly tools: ChatGPT for conversations, Canva AI for design, and Notion AI for productivity.</p>
+          </div>
+          <div class="recommendation-card">
+            <div class="rec-header">
+              <span class="rec-badge rec-business">Business</span>
+              <span class="rec-category">Enterprise</span>
+            </div>
+            <h3>AI for Business Automation</h3>
+            <p>Automate workflows with Zapier AI, customer service with Intercom AI, and analytics with Tableau AI integrations.</p>
+          </div>
+          <div class="recommendation-card">
+            <div class="rec-header">
+              <span class="rec-badge rec-developer">Developer</span>
+              <span class="rec-category">Technical</span>
+            </div>
+            <h3>Developer's AI Toolkit</h3>
+            <p>Boost your coding with GitHub Copilot, debug with Claude, test with Codium, and deploy with AI-powered CI/CD tools.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="container">
+      <div class="filter-section" id="filter-section">
+        <h2 class="section-title" id="section-title">🔥 Trending AI Tools</h2>
+        <div class="filter-tabs" id="filter-tabs">
+          <button class="filter-tab active" data-category="all">All</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories View (hidden by default) -->
+    <div class="container" id="categories-view" style="display:none;">
+      <h2 class="section-title" style="margin-bottom: 1.5rem;">📂 Categories</h2>
+      <div class="categories-grid" id="categories-grid"></div>
+    </div>
+
+    <!-- Tools Grid -->
+    <div class="container">
+      <div id="tools-container">
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <span class="loading-text">Discovering AI tools...</span>
+        </div>
+        <div class="tools-grid" id="tools-grid" style="display:none;"></div>
+        <div class="empty-state" id="empty-state" style="display:none;">
+          <div class="empty-icon">🔍</div>
+          <p>No tools found. Try a different search or category.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SHARE & SUBSCRIBE SECTION ====== -->
+    <div class="container">
+      <section class="share-section" id="share-section">
+        <div class="share-inner">
+          <div class="share-content">
+            <div class="share-icon-large">📬</div>
+            <h2>Share with Friends & Get Daily AI Updates</h2>
+            <p>Subscribe for daily updates on trending AI tools ranked by features, popularity, and market trends. Share with friends and family to keep everyone informed!</p>
+          </div>
+          <div class="share-form-wrapper">
+            <form id="subscribe-form" class="subscribe-form" onsubmit="handleSubscribe(event)">
+              <div class="subscribe-input-group">
+                <input type="text" id="subscribe-name" placeholder="Your name (optional)" class="subscribe-input">
+                <input type="email" id="subscribe-email" placeholder="Enter your email address" class="subscribe-input" required>
+                <input type="text" id="subscribe-referral" placeholder="Referral code (optional)" class="subscribe-input subscribe-input-sm">
+              </div>
+              <button type="submit" class="btn btn-subscribe" id="btn-subscribe">
+                <span>🚀 Subscribe for Daily Updates</span>
+              </button>
+            </form>
+            <div id="referral-result" class="referral-result" style="display:none;">
+              <div class="referral-success">
+                <span class="referral-icon">🎉</span>
+                <p id="referral-message"></p>
+                <div class="referral-share-box">
+                  <p>Your referral link:</p>
+                  <div class="referral-link-wrapper">
+                    <input type="text" id="referral-link" readonly class="referral-link-input">
+                    <button class="btn btn-copy" onclick="copyReferralLink()">📋 Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="share-buttons" id="share-buttons">
+              <h3>Share this platform:</h3>
+              <div class="share-btn-grid">
+                <button class="share-btn share-twitter" onclick="sharePlatform('twitter')">𝕏 Twitter</button>
+                <button class="share-btn share-linkedin" onclick="sharePlatform('linkedin')">in LinkedIn</button>
+                <button class="share-btn share-whatsapp" onclick="sharePlatform('whatsapp')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WhatsApp</button>
+                <button class="share-btn share-telegram" onclick="sharePlatform('telegram')">✈️ Telegram</button>
+                <button class="share-btn share-reddit" onclick="sharePlatform('reddit')">🔗 Reddit</button>
+                <button class="share-btn share-email" onclick="sharePlatform('email')">📧 Email</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ====== REVIEWS & FEEDBACK SECTION ====== -->
+    <div class="container" id="reviews-section" style="display:none;">
+      <section class="reviews-wrapper">
+        <h2 class="section-title" style="margin-bottom: 1.5rem;">⭐ Reviews & Feedback</h2>
+        
+        <!-- Aggregate Stats -->
+        <div class="review-stats" id="review-stats">
+          <div class="review-stat-big">
+            <span class="review-avg" id="review-avg">—</span>
+            <div class="review-stars" id="review-stars">★★★★★</div>
+            <span class="review-count" id="review-count">— reviews</span>
+          </div>
+        </div>
+
+        <!-- Review Form -->
+        <div class="review-form-card">
+          <h3>📝 Leave Your Review</h3>
+          <form id="review-form" onsubmit="handleReviewSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="review-name">Your Name *</label>
+                <input type="text" id="review-name" required placeholder="John Doe" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="review-email">Email (optional)</label>
+                <input type="email" id="review-email" placeholder="john@example.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Rating *</label>
+              <div class="star-rating" id="star-rating">
+                <button type="button" class="star-btn" data-rating="1" onclick="setRating(1)">★</button>
+                <button type="button" class="star-btn" data-rating="2" onclick="setRating(2)">★</button>
+                <button type="button" class="star-btn" data-rating="3" onclick="setRating(3)">★</button>
+                <button type="button" class="star-btn" data-rating="4" onclick="setRating(4)">★</button>
+                <button type="button" class="star-btn" data-rating="5" onclick="setRating(5)">★</button>
+              </div>
+              <input type="hidden" id="review-rating" value="0">
+            </div>
+            <div class="form-group">
+              <label for="review-title">Review Title</label>
+              <input type="text" id="review-title" placeholder="Sum up your experience" maxlength="200">
+            </div>
+            <div class="form-group">
+              <label for="review-content">Your Review *</label>
+              <textarea id="review-content" required placeholder="Share your experience..." rows="4" maxlength="2000"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg" id="btn-review-submit">Submit Review</button>
+          </form>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-list" id="reviews-list">
+          <div class="loading" id="reviews-loading" style="display:none;">
+            <div class="spinner"></div>
+            <span class="loading-text">Loading reviews...</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ====== BUSINESS INQUIRY SECTION ====== -->
+    <div class="container">
+      <section class="inquiry-section" id="inquiry-section">
+        <div class="inquiry-inner">
+          <div class="inquiry-content">
+            <div class="inquiry-icon">💼</div>
+            <h2>Business Inquiries</h2>
+            <p>Have a question, partnership opportunity, or need custom AI tool integration? Reach out to our team and we'll get back to you promptly.</p>
+          </div>
+          <div class="inquiry-form-wrapper">
+            <form id="inquiry-form" onsubmit="handleInquirySubmit(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="inquiry-name">Your Name *</label>
+                  <input type="text" id="inquiry-name" required placeholder="Jane Smith" maxlength="100">
+                </div>
+                <div class="form-group">
+                  <label for="inquiry-email">Email Address *</label>
+                  <input type="email" id="inquiry-email" required placeholder="jane@company.com">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inquiry-subject">Subject</label>
+                <input type="text" id="inquiry-subject" placeholder="Partnership / Feedback / Other" maxlength="200">
+              </div>
+              <div class="form-group">
+                <label for="inquiry-message">Your Message *</label>
+                <textarea id="inquiry-message" required placeholder="Describe your inquiry..." rows="4" maxlength="5000"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg" id="btn-inquiry-submit">📧 Send Inquiry</button>
+            </form>
+            <div id="inquiry-confirm" class="inquiry-confirm" style="display:none;">
+              <div class="confirm-icon">✅</div>
+              <h3>Inquiry Received!</h3>
+              <p>Thank you for reaching out. Our team has been notified and will respond as soon as possible.</p>
+              <button class="btn btn-secondary" onclick="resetInquiryForm()">Submit Another</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="footer-logo">🤖 AI Tool Discovery Engine</div>
+            <p>Automated crawling & ranking powered by data from GitHub, Product Hunt, Hacker News & more.</p>
+          </div>
+          <div class="footer-links">
+            <h4>Platform</h4>
+            <a href="/" onclick="switchView('trending')">Trending Tools</a>
+            <a href="/" onclick="switchView('categories')">Categories</a>
+            <a href="/" onclick="switchView('innovations')">Innovations</a>
+            <a href="/" onclick="switchView('reviews')">Reviews</a>
+          </div>
+          <div class="footer-links">
+            <h4>Resources</h4>
+            <a href="/admin">Admin Dashboard</a>
+            <a href="#inquiry-section">Contact Us</a>
+            <a href="#share-section">Subscribe</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 AI Tool Discovery Engine. Built with ❤️ for the AI community.</p>
+          <p class="footer-credit">Crafted & engineered by <span class="credit-name">Mr. Jack</span> — Architect of the AI Tool Discovery Engine</p>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ====== JACK AI CHATBOT ====== -->
+  <div class="jack-chatbot" id="jack-chatbot">
+    <button class="jack-toggle" id="jack-toggle" onclick="toggleChat()" aria-label="Open Jack AI Chat">
+      <span class="jack-toggle-icon" id="jack-toggle-icon">💬</span>
+      <span class="jack-badge" id="jack-badge" style="display:none;"></span>
+    </button>
+    
+    <div class="jack-window" id="jack-window" style="display:none;">
+      <div class="jack-header">
+        <div class="jack-header-info">
+          <div class="jack-avatar">🤖</div>
+          <div>
+            <div class="jack-name">Jack AI</div>
+            <div class="jack-status">
+              <span class="jack-status-dot"></span>
+              Online — Ready to help
+            </div>
+          </div>
+        </div>
+        <button class="jack-close" onclick="toggleChat()" aria-label="Close chat">✕</button>
+      </div>
+      
+      <div class="jack-messages" id="jack-messages">
+        <!-- Messages populate here -->
+      </div>
+
+      <div class="jack-suggestions" id="jack-suggestions">
+        <button class="jack-suggestion" onclick="sendSuggestion('Show me trending tools')">🔥 Trending tools</button>
+        <button class="jack-suggestion" onclick="sendSuggestion('What categories are available?')">📂 Categories</button>
+        <button class="jack-suggestion" onclick="sendSuggestion('Help me find free AI tools')">💰 Free tools</button>
+      </div>
+      
+      <div class="jack-input-area">
+        <input type="text" id="jack-input" placeholder="Ask Jack anything about AI tools..." 
+               onkeydown="if(event.key==='Enter')sendChatMessage()" aria-label="Type your message">
+        <button class="jack-send" onclick="sendChatMessage()" aria-label="Send message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

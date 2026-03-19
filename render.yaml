@@ -1,0 +1,30 @@
+# ============================================
+# Render.com Blueprint
+# Deploy: Connect your Git repo on render.com
+# ============================================
+services:
+  - type: web
+    name: ai-tool-discovery
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false  # Set manually in Render dashboard
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: PORT
+        value: 3000
+    domains:
+      - aitool.discovery
+    healthCheckPath: /api/health
+    autoDeploy: true
+
+  # Optional: MongoDB (use Atlas instead for production)
+  # - type: private-service
+  #   name: mongodb
+  #   runtime: docker
+  #   dockerfilePath: ./Dockerfile.mongo

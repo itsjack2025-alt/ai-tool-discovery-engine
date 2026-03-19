@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AI Tool Discovery Engine - Discover, analyze, and track the hottest AI tools trending worldwide. Daily updates, AI chatbot Jack, reviews, and more.">
-  <meta name="keywords" content="AI tools, artificial intelligence, trending, discovery, machine learning, generative AI, chatbot, reviews">
+  <meta name="description" content="AI Tool Discovery Engine - Discover, analyze, and track the hottest AI tools trending worldwide. Daily updates, reviews, and more.">
+  <meta name="keywords" content="AI tools, artificial intelligence, trending, discovery, machine learning, generative AI, reviews">
   <title>AI Tool Discovery Engine — Top Trending AI Tools Worldwide</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
   <link rel="stylesheet" href="/css/styles.css">
@@ -148,6 +148,8 @@
             <span class="live-visitors-wrapper">
               <span class="live-dot"></span>
               <span id="live-visitor-count">—</span> visitors online now
+              <span class="total-visitors-divider" style="margin: 0 10px; opacity: 0.5;">|</span>
+              <span class="total-visitors-count">Total Visits: <strong id="total-visitor-count" data-base="24592" style="color: var(--accent-primary-light);">24,592</strong></span>
             </span>
           </span>
         </div>
@@ -287,37 +289,12 @@
       <section class="share-section" id="share-section">
         <div class="share-inner">
           <div class="share-content">
-            <div class="share-icon-large">📬</div>
-            <h2>Share with Friends & Get Daily AI Updates</h2>
-            <p>Subscribe for daily updates on trending AI tools ranked by features, popularity, and market trends. Share with friends and family to keep everyone informed!</p>
+            <div class="share-icon-large">🚀</div>
+            <h2>Share with friends and family to get daily AI updates and upskill yourself using AI tools.</h2>
           </div>
           <div class="share-form-wrapper">
-            <form id="subscribe-form" class="subscribe-form" onsubmit="handleSubscribe(event)">
-              <div class="subscribe-input-group">
-                <input type="text" id="subscribe-name" placeholder="Your name (optional)" class="subscribe-input">
-                <input type="email" id="subscribe-email" placeholder="Enter your email address" class="subscribe-input" required>
-                <input type="text" id="subscribe-referral" placeholder="Referral code (optional)" class="subscribe-input subscribe-input-sm">
-              </div>
-              <button type="submit" class="btn btn-subscribe" id="btn-subscribe">
-                <span>🚀 Subscribe for Daily Updates</span>
-              </button>
-            </form>
-            <div id="referral-result" class="referral-result" style="display:none;">
-              <div class="referral-success">
-                <span class="referral-icon">🎉</span>
-                <p id="referral-message"></p>
-                <div class="referral-share-box">
-                  <p>Your referral link:</p>
-                  <div class="referral-link-wrapper">
-                    <input type="text" id="referral-link" readonly class="referral-link-input">
-                    <button class="btn btn-copy" onclick="copyReferralLink()">📋 Copy</button>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div class="share-buttons" id="share-buttons">
-              <h3>Share this platform:</h3>
-              <div class="share-btn-grid">
+              <div class="share-btn-grid" style="margin-top: 1.5rem;">
                 <button class="share-btn share-twitter" onclick="sharePlatform('twitter')">𝕏 Twitter</button>
                 <button class="share-btn share-linkedin" onclick="sharePlatform('linkedin')">in LinkedIn</button>
                 <button class="share-btn share-whatsapp" onclick="sharePlatform('whatsapp')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WhatsApp</button>
@@ -332,8 +309,8 @@
     </div>
 
     <!-- ====== REVIEWS & FEEDBACK SECTION ====== -->
-    <div class="container" id="reviews-section" style="display:none;">
-      <section class="reviews-wrapper">
+    <div class="container">
+      <section class="reviews-wrapper" id="reviews-section">
         <h2 class="section-title" style="margin-bottom: 1.5rem;">⭐ Reviews & Feedback</h2>
         
         <!-- Aggregate Stats -->
@@ -439,8 +416,14 @@
       <div class="container">
         <div class="footer-grid">
           <div class="footer-brand">
-            <div class="footer-logo">🤖 AI Tool Discovery Engine</div>
-            <p>Automated crawling & ranking powered by data from GitHub, Product Hunt, Hacker News & more.</p>
+            <div class="footer-logo logo-text-new">
+              <span style="font-size:1.5rem; margin-right: 8px;">🤖</span>
+              <span class="logo-text-ai">AI</span>
+              <span class="logo-text-tool">Tool</span>
+              <span class="logo-text-discovery">Discovery</span>
+              <span class="logo-text-engine">Engine</span>
+            </div>
+            <p style="margin-top: 15px;">Automated crawling & ranking powered by data from GitHub, Product Hunt, Hacker News & more.</p>
           </div>
           <div class="footer-links">
             <h4>Platform</h4>
@@ -463,50 +446,6 @@
       </div>
     </footer>
   </main>
-
-  <!-- ====== JACK AI CHATBOT ====== -->
-  <div class="jack-chatbot" id="jack-chatbot">
-    <button class="jack-toggle" id="jack-toggle" onclick="toggleChat()" aria-label="Open Jack AI Chat">
-      <span class="jack-toggle-icon" id="jack-toggle-icon">💬</span>
-      <span class="jack-badge" id="jack-badge" style="display:none;"></span>
-    </button>
-    
-    <div class="jack-window" id="jack-window" style="display:none;">
-      <div class="jack-header">
-        <div class="jack-header-info">
-          <div class="jack-avatar">🤖</div>
-          <div>
-            <div class="jack-name">Jack AI</div>
-            <div class="jack-status">
-              <span class="jack-status-dot"></span>
-              Online — Ready to help
-            </div>
-          </div>
-        </div>
-        <button class="jack-close" onclick="toggleChat()" aria-label="Close chat">✕</button>
-      </div>
-      
-      <div class="jack-messages" id="jack-messages">
-        <!-- Messages populate here -->
-      </div>
-
-      <div class="jack-suggestions" id="jack-suggestions">
-        <button class="jack-suggestion" onclick="sendSuggestion('Show me trending tools')">🔥 Trending tools</button>
-        <button class="jack-suggestion" onclick="sendSuggestion('What categories are available?')">📂 Categories</button>
-        <button class="jack-suggestion" onclick="sendSuggestion('Help me find free AI tools')">💰 Free tools</button>
-      </div>
-      
-      <div class="jack-input-area">
-        <input type="text" id="jack-input" placeholder="Ask Jack anything about AI tools..." 
-               onkeydown="if(event.key==='Enter')sendChatMessage()" aria-label="Type your message">
-        <button class="jack-send" onclick="sendChatMessage()" aria-label="Send message">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>

@@ -19,7 +19,7 @@ services:
       - key: PORT
         value: 3000
     domains:
-      - aitool.discovery
+      - atde-app.loca.lt
     healthCheckPath: /api/health
     autoDeploy: true
 

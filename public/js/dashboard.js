@@ -8,8 +8,6 @@ let currentView = 'trending';
 let currentCategory = 'all';
 let allTools = [];
 let searchTimeout = null;
-let chatOpen = false;
-let chatSessionId = null;
 let selectedRating = 0;
 
 // Category icons mapping
@@ -93,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   setupSearchBar();
   loadSchedulerStatus();
-  initChatbot();
   loadReviews();
   initTotalVisitorCounter();
   initScrollEffects();
@@ -693,143 +690,6 @@ function createToolCard(tool, rank) {
   `;
 
   return card;
-}
-
-// ================================================
-// JACK AI CHATBOT
-// ================================================
-
-function initChatbot() {
-  chatSessionId = localStorage.getItem('jack_session_id') || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  localStorage.setItem('jack_session_id', chatSessionId);
-
-  // Add welcome message
-  const messagesContainer = document.getElementById('jack-messages');
-  addChatMessage('assistant', "Hey there! 👋 I'm **Jack**, your AI tools guide. I can help you discover, compare, and understand any AI tool. What are you looking for today?");
-}
-
-function toggleChat() {
-  chatOpen = !chatOpen;
-  const window = document.getElementById('jack-window');
-  const icon = document.getElementById('jack-toggle-icon');
-  const badge = document.getElementById('jack-badge');
-
-  if (chatOpen) {
-    window.style.display = 'flex';
-    icon.textContent = '✕';
-    badge.style.display = 'none';
-    setTimeout(() => {
-      window.classList.add('jack-window-visible');
-      document.getElementById('jack-input').focus();
-    }, 10);
-  } else {
-    window.classList.remove('jack-window-visible');
-    setTimeout(() => {
-      window.style.display = 'none';
-      icon.textContent = '💬';
-    }, 300);
-  }
-}
-
-async function sendChatMessage() {
-  const input = document.getElementById('jack-input');
-  const message = input.value.trim();
-  if (!message) return;
-
-  input.value = '';
-  addChatMessage('user', message);
-
-  // Show typing indicator
-  showTypingIndicator();
-
-  try {
-    const result = await fetchAPI('/public/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, session_id: chatSessionId }),
-      silent: true,
-    });
-
-    removeTypingIndicator();
-
-    if (result?.success) {
-      addChatMessage('assistant', result.data.message);
-
-      // Update suggestions
-      if (result.data.suggestions) {
-        updateChatSuggestions(result.data.suggestions);
-      }
-    } else {
-      addChatMessage('assistant', "I'm having a moment — could you try again? 🤔");
-    }
-  } catch (error) {
-    removeTypingIndicator();
-    addChatMessage('assistant', "Oops, something went wrong. Let me try again in a moment! 🔄");
-  }
-}
-
-function sendSuggestion(text) {
-  document.getElementById('jack-input').value = text;
-  sendChatMessage();
-}
-
-function addChatMessage(role, content) {
-  const container = document.getElementById('jack-messages');
-  const msg = document.createElement('div');
-  msg.className = `jack-msg jack-msg-${role}`;
-
-  // Simple markdown-like formatting
-  const formatted = content
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/\n/g, '<br>')
-    .replace(/• /g, '&bull; ');
-
-  msg.innerHTML = `
-    <div class="jack-msg-bubble">
-      ${role === 'assistant' ? '<div class="jack-msg-avatar">🤖</div>' : ''}
-      <div class="jack-msg-content">${formatted}</div>
-    </div>
-  `;
-
-  container.appendChild(msg);
-  container.scrollTop = container.scrollHeight;
-}
-
-function showTypingIndicator() {
-  const container = document.getElementById('jack-messages');
-  const indicator = document.createElement('div');
-  indicator.className = 'jack-msg jack-msg-assistant jack-typing';
-  indicator.id = 'jack-typing';
-  indicator.innerHTML = `
-    <div class="jack-msg-bubble">
-      <div class="jack-msg-avatar">🤖</div>
-      <div class="jack-msg-content">
-        <div class="typing-dots">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
-    </div>
-  `;
-  container.appendChild(indicator);
-  container.scrollTop = container.scrollHeight;
-}
-
-function removeTypingIndicator() {
-  const indicator = document.getElementById('jack-typing');
-  if (indicator) indicator.remove();
-}
-
-function updateChatSuggestions(suggestions) {
-  const container = document.getElementById('jack-suggestions');
-  container.innerHTML = '';
-  suggestions.forEach(text => {
-    const btn = document.createElement('button');
-    btn.className = 'jack-suggestion';
-    btn.textContent = text;
-    btn.addEventListener('click', () => sendSuggestion(text));
-    container.appendChild(btn);
-  });
 }
 
 // ================================================

@@ -326,22 +326,6 @@ class MaintenanceAgent {
         });
       }
 
-      // Clean old chat sessions (> 30 days)
-      try {
-        const ChatMessage = mongoose.model('ChatMessage');
-        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-        const deleted = await ChatMessage.deleteMany({ created_at: { $lt: thirtyDaysAgo } });
-        if (deleted.deletedCount > 0) {
-          this.resolutions.push({
-            issue: 'Old chat data',
-            action: `Cleaned ${deleted.deletedCount} chat messages older than 30 days`,
-            timestamp: new Date(),
-          });
-        }
-      } catch (e) {
-        // Chat model may not exist yet
-      }
-
       logger.info('[Maintenance] ✅ Stale data cleanup complete');
     } catch (error) {
       logger.error('[Maintenance] Stale data cleanup error:', error.message);

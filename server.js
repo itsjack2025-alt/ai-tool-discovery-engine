@@ -1,6 +1,6 @@
 // =========================================
 // AI Tool Discovery Engine - Main Server v3.0
-// Full-featured platform with chatbot, reviews,
+// Full-featured platform with reviews,
 // maintenance, traffic monitoring, and more
 // =========================================
 require('dotenv').config();
@@ -185,7 +185,6 @@ async function start() {
       logger.info(`  📡  API:          http://localhost:${PORT}/api`);
       logger.info(`  ❤️   Health:       http://localhost:${PORT}/api/health`);
       logger.info(`  📊  Trending:     http://localhost:${PORT}/api/trending`);
-      logger.info(`  💬  Jack AI Chat: http://localhost:${PORT}/api/public/chat`);
       logger.info(`  🔧  Maintenance:  http://localhost:${PORT}/api/admin/maintenance`);
       logger.info(`  📈  Traffic:      http://localhost:${PORT}/api/admin/traffic`);
       logger.info('═══════════════════════════════════════════════════');

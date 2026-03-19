@@ -1,7 +1,7 @@
 # 🚀 Deployment Guide — AI Tool Discovery Engine
 
-## Generated: 2026-03-16T23:09:40.197Z
-## Domain: aitool.discovery
+## Generated: 2026-03-19T00:59:28.848Z
+## Domain: atde-app.loca.lt
 ## Platform: render
 
 ---
@@ -42,9 +42,9 @@
 
 4. **Add Custom Domain**
    - In Render dashboard → Settings → Custom Domains
-   - Add: `aitool.discovery`
+   - Add: `atde-app.loca.lt`
    - Add DNS records:
-     - `CNAME aitool.discovery → your-app.onrender.com`
+     - `CNAME atde-app.loca.lt → your-app.onrender.com`
    - SSL is automatic
 
 ---
@@ -91,14 +91,14 @@
 
 2. **Set up Nginx:**
    ```bash
-   sudo cp nginx.conf /etc/nginx/sites-available/aitool.discovery
-   sudo ln -s /etc/nginx/sites-available/aitool.discovery /etc/nginx/sites-enabled/
+   sudo cp nginx.conf /etc/nginx/sites-available/atde-app.loca.lt
+   sudo ln -s /etc/nginx/sites-available/atde-app.loca.lt /etc/nginx/sites-enabled/
    sudo nginx -t && sudo systemctl reload nginx
    ```
 
 3. **SSL with Certbot:**
    ```bash
-   sudo certbot --nginx -d aitool.discovery -d www.aitool.discovery
+   sudo certbot --nginx -d atde-app.loca.lt -d www.atde-app.loca.lt
    ```
 
 ---
@@ -107,17 +107,17 @@
 
 | Source | Destination |
 |--------|------------|
-| `http://localhost:3000` | `https://aitool.discovery` |
-| `http://localhost:3000/api` | `https://aitool.discovery/api` |
-| `http://localhost:3000/admin` | `https://aitool.discovery/admin` |
+| `http://localhost:3000` | `https://atde-app.loca.lt` |
+| `http://localhost:3000/api` | `https://atde-app.loca.lt/api` |
+| `http://localhost:3000/admin` | `https://atde-app.loca.lt/admin` |
 
 ## DNS Configuration
 
 | Type | Name | Value |
 |------|------|-------|
-| A | aitool.discovery | [Server IP or Platform IP] |
-| CNAME | www | aitool.discovery |
-| CNAME | aitool.discovery | your-app.onrender.com (if Render) |
+| A | atde-app.loca.lt | [Server IP or Platform IP] |
+| CNAME | www | atde-app.loca.lt |
+| CNAME | atde-app.loca.lt | your-app.onrender.com (if Render) |
 
 ---
 
@@ -137,7 +137,7 @@
 
 ## Admin Dashboard
 
-Access: `https://aitool.discovery/admin`
+Access: `https://atde-app.loca.lt/admin`
 
 Default credentials:
 - Username: `admin`

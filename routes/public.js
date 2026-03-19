@@ -1,5 +1,5 @@
 // =========================================
-// Public Routes (submissions, newsletter, chatbot,
+// Public Routes (submissions, newsletter,
 // reviews, inquiries, sharing, subscriber management)
 // =========================================
 const express = require('express');
@@ -9,77 +9,7 @@ const Setting = require('../models/Settings');
 const Review = require('../models/Review');
 const Inquiry = require('../models/Inquiry');
 const Subscriber = require('../models/Subscriber');
-const ChatMessage = require('../models/ChatMessage');
-const JackAI = require('../services/chatbot/JackAI');
 const logger = require('../utils/logger');
-
-// Initialize Jack AI chatbot
-const jackAI = new JackAI();
-
-// ================================================
-// JACK AI CHATBOT
-// ================================================
-
-// Chat with Jack
-router.post('/chat', async (req, res) => {
-  try {
-    const { message, session_id } = req.body;
-    if (!message || !message.trim()) {
-      return res.status(400).json({ success: false, error: 'Message is required' });
-    }
-
-    const sessionId = session_id || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-    // Save user message
-    try {
-      await ChatMessage.create({
-        session_id: sessionId,
-        role: 'user',
-        content: message.trim(),
-      });
-    } catch (e) {
-      // Non-blocking: continue even if save fails
-    }
-
-    // Process with Jack AI
-    const response = await jackAI.processMessage(message.trim(), sessionId);
-
-    // Save assistant response
-    try {
-      await ChatMessage.create({
-        session_id: sessionId,
-        role: 'assistant',
-        content: response.content,
-        metadata: response.metadata,
-      });
-    } catch (e) {
-      // Non-blocking
-    }
-
-    res.json({
-      success: true,
-      data: {
-        message: response.content,
-        suggestions: response.suggestions,
-        session_id: sessionId,
-        metadata: response.metadata,
-      },
-    });
-  } catch (error) {
-    logger.error('[Chat] Error:', error);
-    res.status(500).json({ success: false, error: 'Chat processing failed' });
-  }
-});
-
-// Get chat history
-router.get('/chat/history/:sessionId', async (req, res) => {
-  try {
-    const messages = await ChatMessage.getHistory(req.params.sessionId, 50);
-    res.json({ success: true, data: messages.reverse() });
-  } catch (error) {
-    res.json({ success: true, data: [] });
-  }
-});
 
 // ================================================
 // REVIEWS & FEEDBACK

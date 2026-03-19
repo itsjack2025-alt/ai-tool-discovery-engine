@@ -106,7 +106,6 @@ settingsSchema.statics.seedDefaults = async function () {
     { key: 'maintenance_cron', value: '0 3 * * *', category: 'maintenance', description: 'Maintenance cron schedule' },
 
     // Additional Features
-    { key: 'feature_chatbot', value: true, category: 'features', description: 'Enable Jack AI chatbot' },
     { key: 'feature_reviews', value: true, category: 'features', description: 'Enable user reviews' },
     { key: 'feature_inquiries', value: true, category: 'features', description: 'Enable business inquiries' },
     { key: 'feature_share', value: true, category: 'features', description: 'Enable social sharing' },
